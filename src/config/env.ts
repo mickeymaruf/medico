@@ -2,7 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+type EnvType = "development" | "production";
+
 interface IEnv {
+  NODE_ENV: EnvType;
   PORT: string;
   DATABASE_URL: string;
   BETTER_AUTH_SECRET: string;
@@ -11,6 +14,7 @@ interface IEnv {
 
 const loadEnv = (): IEnv => {
   const variables = [
+    "NODE_ENV",
     "PORT",
     "DATABASE_URL",
     "BETTER_AUTH_SECRET",
@@ -26,6 +30,7 @@ const loadEnv = (): IEnv => {
   });
 
   return {
+    NODE_ENV: process.env.PORT as EnvType,
     PORT: process.env.PORT!,
     DATABASE_URL: process.env.DATABASE_URL!,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET!,

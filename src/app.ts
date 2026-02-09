@@ -1,8 +1,10 @@
 // import cookieParser from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import { IndexRoutes } from "./routes";
-// import { globalErrorHandler } from "./app/middleware/globalErrorHandler";
-// import { notFound } from "./app/middleware/notFound";
+import { notFound } from "./middlewares/notFound";
+import { env } from "./config/env";
+import status from "http-status";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 
 const app: Application = express();
 
@@ -23,7 +25,7 @@ app.get("/", async (req: Request, res: Response) => {
   });
 });
 
-// app.use(globalErrorHandler)
-// app.use(notFound)
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
