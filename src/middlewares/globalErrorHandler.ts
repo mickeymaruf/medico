@@ -2,6 +2,20 @@ import status from "http-status";
 import { env } from "../config/env";
 import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
+import z from "zod";
+
+interface TErrorSources {
+  path: string;
+  message: string;
+}
+
+interface TErrorResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  errorSources?: TErrorSources[];
+  error?: unknown;
+}
 
 export const globalErrorHandler = (
   err: any,
@@ -15,6 +29,7 @@ export const globalErrorHandler = (
 
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = "Internal Server Error";
+  let errorSources: TErrorSources[] = [];
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
@@ -27,11 +42,22 @@ export const globalErrorHandler = (
       default:
         break;
     }
+  } else if (err instanceof z.ZodError) {
+    statusCode = status.BAD_REQUEST;
+    message = "Zod Validation Error";
+    errorSources = err.issues.map((issue) => ({
+      path: issue.path.join("."),
+      message: issue.message,
+    }));
   }
 
-  res.status(statusCode).json({
+  const errorResponse: TErrorResponse = {
     success: false,
+    statusCode,
     message,
-    error: err.message,
-  });
+    errorSources: errorSources,
+    error: env.NODE_ENV === "development" ? err.message : undefined,
+  };
+
+  res.status(statusCode).json(errorResponse);
 };

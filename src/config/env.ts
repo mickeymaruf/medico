@@ -30,7 +30,7 @@ const loadEnv = (): IEnv => {
   });
 
   return {
-    NODE_ENV: process.env.PORT as EnvType,
+    NODE_ENV: process.env.NODE_ENV as EnvType,
     PORT: process.env.PORT!,
     DATABASE_URL: process.env.DATABASE_URL!,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET!,
