@@ -3,6 +3,7 @@ import { env } from "../config/env";
 import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
 import z from "zod";
+import { AppError } from "../utils/AppError";
 
 interface TErrorSources {
   path: string;
@@ -15,6 +16,7 @@ interface TErrorResponse {
   message: string;
   errorSources?: TErrorSources[];
   error?: unknown;
+  stack?: string;
 }
 
 export const globalErrorHandler = (
@@ -30,6 +32,7 @@ export const globalErrorHandler = (
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = "Internal Server Error";
   let errorSources: TErrorSources[] = [];
+  let stack: string | undefined = undefined;
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
@@ -49,6 +52,14 @@ export const globalErrorHandler = (
       path: issue.path.join("."),
       message: issue.message,
     }));
+  } else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    stack = err.stack;
+  } else if (err instanceof Error) {
+    statusCode = status.INTERNAL_SERVER_ERROR;
+    message = err.message;
+    stack = err.stack;
   }
 
   const errorResponse: TErrorResponse = {
@@ -56,7 +67,8 @@ export const globalErrorHandler = (
     statusCode,
     message,
     errorSources: errorSources,
-    error: env.NODE_ENV === "development" ? err.message : undefined,
+    error: env.NODE_ENV === "development" ? err : undefined,
+    stack: env.NODE_ENV === "development" ? stack : undefined,
   };
 
   res.status(statusCode).json(errorResponse);

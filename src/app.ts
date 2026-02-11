@@ -2,8 +2,6 @@
 import express, { Application, Request, Response } from "express";
 import { IndexRoutes } from "./routes";
 import { notFound } from "./middlewares/notFound";
-import { env } from "./config/env";
-import status from "http-status";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 
 const app: Application = express();
