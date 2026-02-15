@@ -6,6 +6,7 @@ import { prisma } from "../lib/prisma";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
 import { JWTPayload } from "better-auth";
+import { COOKIE_NAMES } from "../constants/cookie";
 
 interface UserJWTPayload extends JWTPayload {
   userId: string;
@@ -16,7 +17,7 @@ export const checkAuth = (...roles: Role[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // session verification
-      const sessionToken = req.cookies["better-auth.session_token"];
+      const sessionToken = req.cookies[COOKIE_NAMES.SESSION];
 
       if (!sessionToken) {
         throw new AppError(
@@ -86,7 +87,7 @@ export const checkAuth = (...roles: Role[]) => {
       }
 
       // access token verification (jwt)
-      const accessToken = req.cookies["accessToken"];
+      const accessToken = req.cookies[COOKIE_NAMES.ACCESS];
 
       if (!accessToken) {
         throw new AppError(

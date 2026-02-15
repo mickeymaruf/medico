@@ -2,9 +2,9 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { AuthService } from "./auth.service";
-import { setCookie } from "../../utils/cookie";
-import { convertDays } from "../../utils/time";
 import { AppError } from "../../utils/AppError";
+import { COOKIE_NAMES } from "../../constants/cookie";
+import { clearAuthCookies, setAuthCookies } from "../../utils/authCookies";
 
 const registerPatient = catchAsync(async (req, res) => {
   const result = await AuthService.registerPatient(req.body);
@@ -19,16 +19,11 @@ const registerPatient = catchAsync(async (req, res) => {
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthService.loginUser(req.body);
-  const { accessToken, refreshToken, token } = result;
 
-  setCookie(res, "accessToken", accessToken, {
-    maxAge: convertDays(1, "ms"),
-  });
-  setCookie(res, "refreshToken", refreshToken, {
-    maxAge: convertDays(7, "ms"),
-  });
-  setCookie(res, "better-auth.session_token", token, {
-    maxAge: convertDays(1, "ms"),
+  setAuthCookies(res, {
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+    sessionToken: result.token,
   });
 
   sendResponse(res, {
@@ -52,8 +47,8 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 const getNewToken = catchAsync(async (req, res) => {
-  const refreshToken = req.cookies["refreshToken"];
-  const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+  const refreshToken = req.cookies[COOKIE_NAMES.REFRESH];
+  const betterAuthSessionToken = req.cookies[COOKIE_NAMES.SESSION];
 
   if (!refreshToken || !betterAuthSessionToken) {
     throw new AppError(
@@ -62,31 +57,67 @@ const getNewToken = catchAsync(async (req, res) => {
     );
   }
 
-  const {
-    accessToken,
-    refreshToken: newRefreshToken,
-    sessionToken,
-  } = await AuthService.getNewToken(refreshToken, betterAuthSessionToken);
+  const result = await AuthService.getNewToken(
+    refreshToken,
+    betterAuthSessionToken,
+  );
 
-  setCookie(res, "accessToken", accessToken, {
-    maxAge: convertDays(1, "ms"),
-  });
-  setCookie(res, "refreshToken", newRefreshToken, {
-    maxAge: convertDays(7, "ms"),
-  });
-  setCookie(res, "better-auth.session_token", sessionToken, {
-    maxAge: convertDays(1, "ms"),
+  setAuthCookies(res, {
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+    sessionToken: result.token,
   });
 
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
     message: "New tokens generated successfully",
-    data: {
-      accessToken,
-      refreshToken: newRefreshToken,
-      sessionToken,
-    },
+    data: result,
+  });
+});
+
+const changePassword = catchAsync(async (req, res) => {
+  const betterAuthSessionToken = req.cookies[COOKIE_NAMES.SESSION];
+
+  if (!betterAuthSessionToken) {
+    throw new AppError("Session token is missing", status.UNAUTHORIZED);
+  }
+
+  const result = await AuthService.changePassword(
+    betterAuthSessionToken,
+    req.body,
+  );
+
+  setAuthCookies(res, {
+    accessToken: result.accessToken,
+    refreshToken: result.refreshToken,
+    sessionToken: result.token as string,
+  });
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
+
+const logoutUser = catchAsync(async (req, res) => {
+  const betterAuthSessionToken = req.cookies[COOKIE_NAMES.SESSION];
+
+  if (!betterAuthSessionToken) {
+    throw new AppError("Session token is missing", status.UNAUTHORIZED);
+  }
+
+  const result = await AuthService.logoutUser(betterAuthSessionToken);
+
+  clearAuthCookies(res);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "User logged out successfully",
+    data: result,
   });
 });
 
@@ -95,4 +126,6 @@ export const AuthController = {
   loginUser,
   getMe,
   getNewToken,
+  changePassword,
+  logoutUser,
 };

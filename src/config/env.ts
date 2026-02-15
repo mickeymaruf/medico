@@ -14,6 +14,8 @@ interface IEnv {
   BETTER_AUTH_URL: string;
   ACCESS_TOKEN_SECRET: string;
   REFRESH_TOKEN_SECRET: string;
+  ACCESS_TOKEN_EXPIRES_IN: string;
+  REFRESH_TOKEN_EXPIRES_IN: string;
 }
 
 const loadEnv = (): IEnv => {
@@ -25,6 +27,8 @@ const loadEnv = (): IEnv => {
     "BETTER_AUTH_URL",
     "ACCESS_TOKEN_SECRET",
     "REFRESH_TOKEN_SECRET",
+    "ACCESS_TOKEN_EXPIRES_IN",
+    "REFRESH_TOKEN_EXPIRES_IN",
   ];
 
   variables.forEach((variable) => {
@@ -44,6 +48,8 @@ const loadEnv = (): IEnv => {
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL!,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET!,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET!,
+    ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN!,
+    REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN!,
   };
 };
 
