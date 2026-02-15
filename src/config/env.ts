@@ -16,6 +16,8 @@ interface IEnv {
   REFRESH_TOKEN_SECRET: string;
   ACCESS_TOKEN_EXPIRES_IN: string;
   REFRESH_TOKEN_EXPIRES_IN: string;
+  GOOGLE_APP_PASSWORD: string;
+  EMAIL_USER: string;
 }
 
 const loadEnv = (): IEnv => {
@@ -29,6 +31,8 @@ const loadEnv = (): IEnv => {
     "REFRESH_TOKEN_SECRET",
     "ACCESS_TOKEN_EXPIRES_IN",
     "REFRESH_TOKEN_EXPIRES_IN",
+    "GOOGLE_APP_PASSWORD",
+    "EMAIL_USER",
   ];
 
   variables.forEach((variable) => {
@@ -50,6 +54,8 @@ const loadEnv = (): IEnv => {
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET!,
     ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN!,
     REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN!,
+    GOOGLE_APP_PASSWORD: process.env.GOOGLE_APP_PASSWORD!,
+    EMAIL_USER: process.env.EMAIL_USER!,
   };
 };
 

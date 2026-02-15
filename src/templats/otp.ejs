@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medico - Email Verification</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #111;
+      }
+
+      .title {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .otp-box {
+        display: inline-block;
+        padding: 16px 28px;
+        font-size: 32px;
+        font-weight: bold;
+        letter-spacing: 8px;
+        background: #f1f5f9;
+        border-radius: 8px;
+        color: #111;
+        margin-bottom: 20px;
+      }
+
+      .warning {
+        font-size: 13px;
+        color: #888;
+        margin-top: 20px;
+      }
+
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo">Medico</div>
+
+      <div class="title">Verify Your Email</div>
+
+      <div class="subtitle">
+        Hi <strong><%= name %></strong>,<br /><br />
+        Use the One-Time Password (OTP) below to verify your email address. This
+        code will expire in <strong>2 minutes</strong>.
+      </div>
+
+      <div class="otp-box"><%= otp %></div>
+
+      <div class="warning">
+        If you didn't request this verification, you can safely ignore this
+        email.
+      </div>
+
+      <div class="footer">
+        © <%= new Date().getFullYear() %> Medico. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>

@@ -193,6 +193,22 @@ const logoutUser = async (sessionToken: string) => {
   });
 };
 
+const verifyEmail = async (email: string, otp: string) => {
+  const data = await auth.api.verifyEmailOTP({
+    body: {
+      email: email,
+      otp,
+    },
+  });
+
+  if (data.status && !data.user.emailVerified) {
+    prisma.user.update({
+      where: { id: data.user.id },
+      data: { emailVerified: true },
+    });
+  }
+};
+
 export const AuthService = {
   registerPatient,
   loginUser,
@@ -200,4 +216,5 @@ export const AuthService = {
   getNewToken,
   changePassword,
   logoutUser,
+  verifyEmail,
 };
