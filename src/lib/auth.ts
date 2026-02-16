@@ -5,8 +5,12 @@ import { Role, UserStatus } from "../../generated/prisma/enums";
 import { convertDays } from "../utils/time";
 import { bearer, emailOTP } from "better-auth/plugins";
 import { sendEmail } from "../utils/email";
+import { env } from "../config/env";
 
 export const auth = betterAuth({
+  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
+  trustedOrigins: [env.BETTER_AUTH_URL, env.FRONTEND_URL],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -14,11 +18,29 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
   },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      // optional: already default value is set during create in the db schema
+      // mapProfileToUser: () => {
+      //   return {
+      //     role: Role.PATIENT,
+      //     status: UserStatus.ACTIVE,
+      //     needPasswordChange: false,
+      //     emailVerified: true,
+      //     isDeleted: false,
+      //     deletedAt: null,
+      //   };
+      // },
+    },
+  },
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
   },
+
   user: {
     additionalFields: {
       role: {
@@ -93,6 +115,27 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: convertDays(1, "s"),
+    },
+  },
+  advanced: {
+    /**
+     * Forces cookies to be sent only over HTTPS.
+     *
+     * ✅ Required in production
+     * ❌ Will break on localhost (HTTP) if always true
+     *
+     * Recommended:
+     * useSecureCookies: process.env.NODE_ENV === "production"
+     *
+     * Set to true to use __Secure- prefixed cookies (recommended for better authentication security in production over HTTPS)
+     */
+    useSecureCookies: false,
+
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+      path: "/",
     },
   },
 });

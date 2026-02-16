@@ -5,6 +5,10 @@ import { AuthService } from "./auth.service";
 import { AppError } from "../../utils/AppError";
 import { COOKIE_NAMES } from "../../constants/cookie";
 import { clearAuthCookies, setAuthCookies } from "../../utils/authCookies";
+import { env } from "../../config/env";
+import { auth } from "../../lib/auth";
+import { fromNodeHeaders } from "better-auth/node";
+import { EventEmitterAsyncResource } from "events";
 
 const registerPatient = catchAsync(async (req, res) => {
   const result = await AuthService.registerPatient(req.body);
@@ -154,6 +158,55 @@ const resetPassword = catchAsync(async (req, res) => {
   });
 });
 
+const googleLogin = catchAsync(async (req, res) => {
+  const redirectPath = (req.query.redirect as string) || "/dashboard";
+  const encodedRedirectPath = encodeURIComponent(redirectPath);
+
+  res.render("googleRedirect", {
+    betterAuthUrl: env.BETTER_AUTH_URL,
+    callbackURL: `${env.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`,
+  });
+});
+
+const googleLoginSuccess = catchAsync(async (req, res) => {
+  const redirectPath = req.query.redirect as string;
+  const sessionToken = req.cookies[COOKIE_NAMES.SESSION];
+
+  if (!sessionToken) {
+    return res.redirect(`${env.FRONTEND_URL}/login?error=oauth_failed`);
+  }
+
+  const session = await auth.api.getSession({
+    // headers: fromNodeHeaders(req.headers),
+    headers: new Headers({
+      Cookie: `${COOKIE_NAMES.SESSION}=${sessionToken}`,
+    }),
+  });
+
+  if (!session) {
+    return res.redirect(`${env.FRONTEND_URL}/login?error=no_session_found`);
+  }
+
+  const tokens = await AuthService.googleLoginSuccess(session);
+
+  setAuthCookies(res, {
+    ...tokens,
+    sessionToken,
+  });
+
+  const validRedirectPath =
+    redirectPath.startsWith("/") && !redirectPath.startsWith("//")
+      ? redirectPath
+      : "/dashboard";
+
+  res.redirect(`${env.FRONTEND_URL}${validRedirectPath}`);
+});
+
+// const handleOAuthError = catchAsync((req, res) => {
+//   const error = (req.query.error as string) || "oauth_failed";
+//   res.redirect(`${env.FRONTEND_URL}/login?error=${error}`);
+// });
+
 export const AuthController = {
   registerPatient,
   loginUser,
@@ -164,4 +217,7 @@ export const AuthController = {
   verifyEmail,
   forgetPassword,
   resetPassword,
+  googleLogin,
+  googleLoginSuccess,
+  // handleOAuthError,
 };

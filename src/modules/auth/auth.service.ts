@@ -281,6 +281,28 @@ const resetPassword = async (
   });
 };
 
+const googleLoginSuccess = async (session: Record<string, any>) => {
+  const user = session.user;
+
+  const patient = await prisma.patient.findUnique({
+    where: { userId: user.id },
+  });
+
+  if (!patient) {
+    await prisma.patient.create({
+      data: {
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    });
+  }
+
+  const tokens = generateTokens(session.user);
+
+  return tokens;
+};
+
 export const AuthService = {
   registerPatient,
   loginUser,
@@ -291,4 +313,5 @@ export const AuthService = {
   verifyEmail,
   forgetPassword,
   resetPassword,
+  googleLoginSuccess,
 };
