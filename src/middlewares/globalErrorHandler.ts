@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
 import z from "zod";
 import { AppError } from "../utils/AppError";
+import { deleteFileFromCloudinary } from "../config/cloudinary.config";
 
 interface TErrorSources {
   path: string;
@@ -19,7 +20,7 @@ interface TErrorResponse {
   stack?: string;
 }
 
-export const globalErrorHandler = (
+export const globalErrorHandler = async (
   err: any,
   req: Request,
   res: Response,
@@ -27,6 +28,16 @@ export const globalErrorHandler = (
 ) => {
   if (env.NODE_ENV === "development") {
     console.log("Error from Global Error Handler", err);
+  }
+
+  if (req.file) {
+    deleteFileFromCloudinary(req.file.filename);
+  }
+
+  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+    await Promise.all(
+      req.files.map((file) => deleteFileFromCloudinary(file.filename)),
+    );
   }
 
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
