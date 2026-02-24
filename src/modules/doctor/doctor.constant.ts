@@ -36,17 +36,17 @@ export const doctorIncludeConfig: Partial<
       specialty: true,
     },
   },
-  // appointments: {
-  //   include: {
-  //     patient: true,
-  //     doctor: true,
-  //   },
-  // },
-  // doctorSchedules: {
-  //   include: {
-  //     schedule: true,
-  //   },
-  // },
-  // prescriptions: true,
-  // reviews: true,
+  appointments: {
+    include: {
+      patient: true,
+      doctor: true,
+    },
+  },
+  doctorSchedules: {
+    include: {
+      schedule: true,
+    },
+  },
+  prescriptions: true,
+  reviews: true,
 };
