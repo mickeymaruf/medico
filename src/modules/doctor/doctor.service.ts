@@ -38,6 +38,7 @@ const getAllDoctors = async (query: IQueryParams) => {
     .where({ isDeleted: false })
     .include({
       user: true,
+      // commenting to control from query
       // specialties: {
       //   include: {
       //     specialty: true,
@@ -64,7 +65,7 @@ const getDoctorById = async (id: string) => {
       appointments: {
         include: {
           patient: true,
-          // schedule: true, ??
+          // schedule: true, // ??
           doctorSchedule: true,
           prescription: true,
         },

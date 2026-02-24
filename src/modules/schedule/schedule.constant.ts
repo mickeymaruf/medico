@@ -15,14 +15,14 @@ export const scheduleIncludeConfig: Partial<
     Prisma.ScheduleInclude[keyof Prisma.ScheduleInclude]
   >
 > = {
-  //   appointments: {
-  //     include: {
-  //       doctor: true,
-  //       patient: true,
-  //       payment: true,
-  //       prescription: true,
-  //       review: true,
-  //     },
-  //   },
+  appointments: {
+    include: {
+      doctor: true,
+      patient: true,
+      payment: true,
+      prescription: true,
+      review: true,
+    },
+  },
   doctorSchedules: true,
 };

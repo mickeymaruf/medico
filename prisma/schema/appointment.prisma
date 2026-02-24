@@ -11,9 +11,8 @@ model Appointment {
 
     patient        Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
     doctor         Doctor          @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-    // ??
-    // scheduleId String
-    // schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+    scheduleId     String
+    schedule       Schedule        @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
     doctorSchedule DoctorSchedules @relation(fields: [doctorId, doctorScheduleId], references: [doctorId, scheduleId], onDelete: Cascade)
     review         Review?
     prescription   Prescription?
