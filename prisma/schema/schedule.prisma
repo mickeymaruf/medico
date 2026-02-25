@@ -17,9 +17,10 @@ model DoctorSchedules {
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
 
-    doctor      Doctor       @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    schedule    Schedule     @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    appointment Appointment?
+    doctor   Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    // appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+    // appointmentId String?
 
     @@id([doctorId, scheduleId])
     @@index([doctorId])

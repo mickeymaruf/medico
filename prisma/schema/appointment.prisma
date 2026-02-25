@@ -1,27 +1,28 @@
 model Appointment {
-    id               String            @id @default(uuid(7))
-    patientId        String
-    doctorScheduleId String
-    doctorId         String
-    videoCallingId   String            @unique
-    status           AppointmentStatus @default(SCHEDULED)
-    paymentStatus    PaymentStatus     @default(UNPAID)
-    createdAt        DateTime          @default(now())
-    updatedAt        DateTime          @updatedAt
-
-    patient        Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
-    doctor         Doctor          @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+    id             String            @id @default(uuid(7))
+    patientId      String
     scheduleId     String
-    schedule       Schedule        @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-    doctorSchedule DoctorSchedules @relation(fields: [doctorId, doctorScheduleId], references: [doctorId, scheduleId], onDelete: Cascade)
-    review         Review?
-    prescription   Prescription?
-    payment        Payment?
+    // doctorScheduleId String
+    doctorId       String
+    videoCallingId String            @unique @db.Uuid()
+    status         AppointmentStatus @default(SCHEDULED)
+    paymentStatus  PaymentStatus     @default(UNPAID)
+    createdAt      DateTime          @default(now())
+    updatedAt      DateTime          @updatedAt
 
-    @@unique([doctorId, doctorScheduleId])
+    patient      Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+    doctor       Doctor        @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+    schedule     Schedule      @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+    // doctorSchedule DoctorSchedules @relation(fields: [doctorId, doctorScheduleId], references: [doctorId, scheduleId], onDelete: Cascade)
+    review       Review?
+    prescription Prescription?
+    payment      Payment?
+
+    // @@unique([doctorId, doctorScheduleId])
     @@index([patientId])
     @@index([doctorId])
-    @@index([doctorScheduleId])
+    // @@index([doctorScheduleId])
+    @@index([scheduleId])
     @@index([status])
     @@map("appointments")
 }
