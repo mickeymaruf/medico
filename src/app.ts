@@ -9,6 +9,9 @@ import path from "path";
 import cors from "cors";
 import { env } from "./config/env";
 import qs from "qs";
+import { PaymentController } from "./modules/payment/payment.controller";
+import { AppointmentService } from "./modules/appointment/appointment.service";
+import cron from "node-cron";
 
 const app: Application = express();
 
@@ -30,6 +33,12 @@ app.use(
   }),
 );
 
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentController.handleStripeWebhookEvent,
+);
+
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // Enable URL-encoded form data parsing
@@ -38,6 +47,18 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(cookieParser());
+
+cron.schedule("*/25 * * * *", async () => {
+  try {
+    console.log("Running cron job to cancel unpaid appointments...");
+    await AppointmentService.cancelUnpaidAppointments();
+  } catch (error: any) {
+    console.error(
+      "Error occurred while canceling unpaid appointments:",
+      error.message,
+    );
+  }
+});
 
 app.use("/api/v1", IndexRoutes);
 
