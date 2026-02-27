@@ -8,11 +8,7 @@ import { validateRequest } from "../../middlewares/validateRequest";
 
 const router = Router();
 
-router.get(
-  "/",
-  // checkAuth(Role.PATIENT),
-  SpecialtyController.getAllSpecialties,
-);
+router.get("/", checkAuth(Role.PATIENT), SpecialtyController.getAllSpecialties);
 router.post(
   "/",
   parser.single("file"),

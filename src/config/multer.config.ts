@@ -10,16 +10,16 @@ const allowedTypes = [
   "application/pdf",
 ];
 
-const sanitizeFileName = (originalName: string) => {
-  const ext = path.extname(originalName);
-  const base = path.basename(originalName, ext);
+// const sanitizeFileName = (originalName: string) => {
+//   const ext = path.extname(originalName);
+//   const base = path.basename(originalName, ext);
 
-  return base
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "-") // replace special chars with dash
-    .replace(/-+/g, "-") // remove duplicate dashes
-    .replace(/^-|-$/g, ""); // trim leading/trailing dash
-};
+//   return base
+//     .toLowerCase()
+//     .replace(/[^a-z0-9]/g, "-") // replace special chars with dash
+//     .replace(/-+/g, "-") // remove duplicate dashes
+//     .replace(/^-|-$/g, ""); // trim leading/trailing dash
+// };
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,

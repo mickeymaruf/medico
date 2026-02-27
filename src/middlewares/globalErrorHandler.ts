@@ -5,6 +5,7 @@ import { Prisma } from "../../generated/prisma/client";
 import z from "zod";
 import { AppError } from "../utils/AppError";
 import { deleteFileFromCloudinary } from "../config/cloudinary.config";
+import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/src/app/utils/deleteUploadedFilesFromGlobalErrorHandler";
 
 interface TErrorSources {
   path: string;
@@ -24,21 +25,12 @@ export const globalErrorHandler = async (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction,
 ) => {
   if (env.NODE_ENV === "development") {
     console.log("Error from Global Error Handler", err);
   }
 
-  if (req.file) {
-    deleteFileFromCloudinary(req.file.filename);
-  }
-
-  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-    await Promise.all(
-      req.files.map((file) => deleteFileFromCloudinary(file.filename)),
-    );
-  }
+  await deleteUploadedFilesFromGlobalErrorHandler(req);
 
   let statusCode: number = status.INTERNAL_SERVER_ERROR;
   let message: string = "Internal Server Error";
