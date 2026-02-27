@@ -1,4 +1,4 @@
-import { uuidv7 } from "zod/mini";
+import { v7 as uuidv7 } from "uuid";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import {
@@ -37,12 +37,14 @@ const bookAppointment = async (
     },
   });
 
-  const doctorSchedule = await prisma.doctorSchedules.findUniqueOrThrow({
+  // check if the schedule is already booked for the doctor, if booked then throw error
+  await prisma.doctorSchedules.findUniqueOrThrow({
     where: {
       doctorId_scheduleId: {
         doctorId: doctorData.id,
         scheduleId: scheduleData.id,
       },
+      isBooked: false,
     },
   });
 
@@ -89,7 +91,7 @@ const bookAppointment = async (
           price_data: {
             currency: "bdt",
             product_data: { name: `Appointment with Dr. ${doctorData.name}` },
-            unit_amount: doctorData.appointmentFee * 120,
+            unit_amount: doctorData.appointmentFee * 100,
           },
           quantity: 1,
         },
@@ -373,7 +375,7 @@ const initiatePayment = async (appointmentId: string, user: IRequestUser) => {
           product_data: {
             name: `Appointment with Dr. ${appointmentData.doctor.name}`,
           },
-          unit_amount: appointmentData.doctor.appointmentFee * 120,
+          unit_amount: appointmentData.doctor.appointmentFee * 100,
         },
         quantity: 1,
       },
