@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 interface SendEmailOptions {
   to: string;
   subject: string;
-  templateName: "otp";
+  templateName: string;
   templateData: Record<string, string>;
   attachments?: {
     filename: string;

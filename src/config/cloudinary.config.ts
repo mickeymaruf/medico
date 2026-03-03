@@ -16,7 +16,7 @@ export const uploadFileToCloudinary = async ({
 }: {
   fileName: string;
   buffer: Buffer;
-}) => {
+}): Promise<UploadApiResponse> => {
   if (!fileName || !buffer) {
     throw new AppError(
       "File buffer and file name are required for upload",
@@ -37,7 +37,7 @@ export const uploadFileToCloudinary = async ({
     folder = "documents";
   }
 
-  new Promise((resolve, reject) =>
+  return new Promise((resolve, reject) =>
     cloudinary.uploader
       .upload_stream(
         {

@@ -25,6 +25,7 @@ export const globalErrorHandler = async (
   err: any,
   req: Request,
   res: Response,
+  next: NextFunction, // ⚠️ Must include 4 params or Express won’t recognize this as an error middleware
 ) => {
   if (env.NODE_ENV === "development") {
     console.log("Error from Global Error Handler", err);

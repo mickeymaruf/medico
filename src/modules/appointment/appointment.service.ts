@@ -75,7 +75,7 @@ const bookAppointment = async (
     //TODO : Payment Integration will be here
     const transactionId = String(uuidv7());
 
-    const paymentData = await prisma.payment.create({
+    const paymentData = await tx.payment.create({
       data: {
         appointmentId: appointmentData.id,
         transactionId,
@@ -312,7 +312,7 @@ const bookAppointmentWithPayLater = async (
     //TODO : Payment Integration will be here
     const transactionId = String(uuidv7());
 
-    const paymentData = await prisma.payment.create({
+    const paymentData = await tx.payment.create({
       data: {
         appointmentId: appointmentData.id,
         transactionId,

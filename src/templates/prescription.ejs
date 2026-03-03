@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medico - Prescription</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #111;
+        text-align: center;
+      }
+
+      .title {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333;
+        text-align: center;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: center;
+      }
+
+      .section {
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #111;
+        margin-bottom: 8px;
+      }
+
+      .info-box {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .info-row {
+        margin-bottom: 8px;
+      }
+
+      .info-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #111;
+      }
+
+      .instructions-box {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+        white-space: pre-wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 20px;
+        background: #111;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-top: 15px;
+      }
+
+      .btn-wrapper {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .warning {
+        font-size: 13px;
+        color: #666;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #aaa;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="logo">Medico</div>
+
+      <div class="title">Your Prescription</div>
+
+      <div class="subtitle">
+        Hi <strong><%= patientName %></strong>,<br /><br />
+        Your prescription has been issued. Please review the details below.
+      </div>
+
+      <!-- Doctor Info -->
+      <div class="section">
+        <div class="section-title">Doctor Information</div>
+        <div class="info-box">
+          <div class="info-row">
+            <span class="label">Doctor Name:</span>
+            <%= doctorName %>
+          </div>
+          <div class="info-row">
+            <span class="label">Specialization:</span>
+            <%= specialization %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prescription Details -->
+      <div class="section">
+        <div class="section-title">Prescription Details</div>
+        <div class="info-box">
+          <div class="info-row">
+            <span class="label">Prescription ID:</span>
+            <%= prescriptionId %>
+          </div>
+          <div class="info-row">
+            <span class="label">Appointment Date:</span>
+            <%= appointmentDate %>
+          </div>
+          <div class="info-row">
+            <span class="label">Issued Date:</span>
+            <%= issuedDate %>
+          </div>
+          <% if (followUpDate) { %>
+          <div class="info-row">
+            <span class="label">Follow-up Date:</span>
+            <%= followUpDate %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="section">
+        <div class="section-title">Instructions & Medications</div>
+        <div class="instructions-box">
+          <%= instructions %>
+        </div>
+      </div>
+
+      <!-- PDF Button -->
+      <% if (pdfUrl) { %>
+      <div class="btn-wrapper">
+        <a href="<%= pdfUrl %>" class="btn">Download Prescription PDF</a>
+      </div>
+      <% } %>
+
+      <div class="warning">
+        Please follow all instructions carefully. If you have any questions,
+        contact your healthcare provider.
+      </div>
+
+      <div class="footer">
+        © <%= new Date().getFullYear() %> Medico. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
