@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../utils/errorHelpers/AppError";
 import status from "http-status";
 
 dotenv.config();

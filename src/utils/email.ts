@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import ejs from "ejs";
 import { env } from "../config/env";
 import path from "path";
-import { AppError } from "./AppError";
+import { AppError } from "./errorHelpers/AppError";
 import status from "http-status";
 
 const transporter = nodemailer.createTransport({

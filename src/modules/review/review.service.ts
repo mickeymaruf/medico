@@ -3,7 +3,7 @@ import { PaymentStatus, Role } from "../../../generated/prisma/enums";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import { ICreateReviewPayload, IUpdateReviewPayload } from "./review.interface";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 
 const giveReview = async (
   user: IRequestUser,

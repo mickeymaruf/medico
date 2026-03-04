@@ -3,20 +3,26 @@ import { env } from "../config/env";
 import { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
 import z from "zod";
-import { AppError } from "../utils/AppError";
-import { deleteFileFromCloudinary } from "../config/cloudinary.config";
-import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/src/app/utils/deleteUploadedFilesFromGlobalErrorHandler";
+import { AppError } from "../utils/errorHelpers/AppError";
+import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
+import {
+  handlePrismaClientKnownRequestError,
+  handlePrismaClientUnknownError,
+  handlePrismaClientValidationError,
+  handlerPrismaClientInitializationError,
+  handlerPrismaClientRustPanicError,
+} from "../utils/errorHelpers/handlePrismaErrors";
 
-interface TErrorSources {
+export interface TErrorSources {
   path: string;
   message: string;
 }
 
-interface TErrorResponse {
+export interface TErrorResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  errorSources?: TErrorSources[];
+  errorSources: TErrorSources[];
   error?: unknown;
   stack?: string;
 }
@@ -38,29 +44,56 @@ export const globalErrorHandler = async (
   let errorSources: TErrorSources[] = [];
   let stack: string | undefined = undefined;
 
+  // prettier-ignore
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (err.code) {
-      case "P2025":
-        statusCode = status.NOT_FOUND;
-        message =
-          "An operation failed because it depends on one or more records that were required but not found.";
-        break;
-
-      default:
-        break;
-    }
-  } else if (err instanceof z.ZodError) {
+    const simplifiedError = handlePrismaClientKnownRequestError(err);
+    statusCode = simplifiedError.statusCode as number;
+    message = simplifiedError.message;
+    errorSources = [...simplifiedError.errorSources];
+    stack = err.stack;
+  }
+  else if (err instanceof Prisma.PrismaClientUnknownRequestError) {
+    const simplifiedError = handlePrismaClientUnknownError(err);
+    statusCode = simplifiedError.statusCode as number;
+    message = simplifiedError.message;
+    errorSources = [...simplifiedError.errorSources];
+    stack = err.stack;
+  }
+  else if (err instanceof Prisma.PrismaClientValidationError) {
+    const simplifiedError = handlePrismaClientValidationError(err);
+    statusCode = simplifiedError.statusCode as number;
+    message = simplifiedError.message;
+    errorSources = [...simplifiedError.errorSources];
+    stack = err.stack;
+  }
+  else if (err instanceof Prisma.PrismaClientRustPanicError) {
+    const simplifiedError = handlerPrismaClientRustPanicError();
+    statusCode = simplifiedError.statusCode as number;
+    message = simplifiedError.message;
+    errorSources = [...simplifiedError.errorSources];
+    stack = err.stack;
+  }
+  else if (err instanceof Prisma.PrismaClientInitializationError) {
+    const simplifiedError = handlerPrismaClientInitializationError(err);
+    statusCode = simplifiedError.statusCode as number;
+    message = simplifiedError.message;
+    errorSources = [...simplifiedError.errorSources];
+    stack = err.stack;
+  }
+  else if (err instanceof z.ZodError) {
     statusCode = status.BAD_REQUEST;
     message = "Zod Validation Error";
     errorSources = err.issues.map((issue) => ({
       path: issue.path.join("."),
       message: issue.message,
     }));
-  } else if (err instanceof AppError) {
+  }
+  else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
     stack = err.stack;
-  } else if (err instanceof Error) {
+  }
+  else if (err instanceof Error) {
     statusCode = status.INTERNAL_SERVER_ERROR;
     message = err.message;
     stack = err.stack;

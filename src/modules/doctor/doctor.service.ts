@@ -8,7 +8,7 @@ import {
   doctorSearchableFields,
 } from "./doctor.constant";
 import { IUpdateDoctorPayload } from "./doctor.interface";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 
 const getAllDoctors = async (query: IQueryParams) => {
   // const doctors = await prisma.doctor.findMany({

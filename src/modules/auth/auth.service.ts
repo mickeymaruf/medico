@@ -2,7 +2,7 @@ import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { env } from "../../config/env";
 import { convertDays } from "../../utils/time";

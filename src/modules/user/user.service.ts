@@ -4,7 +4,7 @@ import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { ICreateAdminPayload, ICreateDoctorPayload } from "./user.interface";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 
 const createDoctor = async (payload: ICreateDoctorPayload) => {
   const specialties: Specialty[] = [];

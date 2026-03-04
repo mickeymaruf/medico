@@ -1,6 +1,6 @@
 import status from "http-status";
 import { Role, UserStatus } from "../../../generated/prisma/enums";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import {
   IChangeUserRolePayload,

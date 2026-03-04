@@ -7,7 +7,7 @@ import {
   Role,
 } from "./../../../generated/prisma/enums";
 import { IBookAppointmentPayload } from "./appointment.interface";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 import status from "http-status";
 import { Appointment } from "../../../generated/prisma/client";
 import { stripe } from "../../config/stripe.config";

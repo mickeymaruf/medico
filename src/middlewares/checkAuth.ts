@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Role, UserStatus } from "../../generated/prisma/enums";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../utils/errorHelpers/AppError";
 import status from "http-status";
 import { prisma } from "../lib/prisma";
 import jwt from "jsonwebtoken";

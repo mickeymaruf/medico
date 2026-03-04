@@ -1,6 +1,6 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { env } from "./env";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../utils/errorHelpers/AppError";
 import status from "http-status";
 import path from "path";
 

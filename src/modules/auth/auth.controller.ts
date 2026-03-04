@@ -2,7 +2,7 @@ import status from "http-status";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { AuthService } from "./auth.service";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 import { COOKIE_NAMES } from "../../constants/cookie";
 import { clearAuthCookies, setAuthCookies } from "../../utils/authCookies";
 import { env } from "../../config/env";

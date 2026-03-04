@@ -8,7 +8,7 @@ import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import { sendEmail } from "../../utils/email";
 import { ICreatePrescriptionPayload } from "./prescription.interface";
-import { AppError } from "../../utils/AppError";
+import { AppError } from "../../utils/errorHelpers/AppError";
 import { generatePrescriptionPDF } from "./prescription.utils";
 
 const givePrescription = async (
